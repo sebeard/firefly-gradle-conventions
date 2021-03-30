@@ -9,4 +9,4 @@ pluginManagement {
 }
 
 
-rootProject.name = 'firfly-gradle-conventions'
+rootProject.name = 'firefly-gradle-conventions'
