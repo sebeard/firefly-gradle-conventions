@@ -98,12 +98,6 @@ jobs:
       - name: Run Clean Build
         run: ./gradlew clean build
 
-      - name: Run OWASP Dependency Check
-        run: ./gradlew dependencyCheckAggregate
-
-      - name: Run Mutation Test
-        run: ./gradlew pitest
-
 #      - name: Perform Sonarqube Checks
 #        run: ./gradlew sonarqube
 
