@@ -2,6 +2,9 @@ plugins {
     id 'groovy-gradle-plugin'
     id 'maven-publish'
     id 'com.github.jmongard.git-semver-plugin'
+    id 'org.owasp.dependencycheck'
+    id 'com.github.ben-manes.versions'
+    id 'org.sonarqube'
 }
 
 repositories {
@@ -25,6 +28,41 @@ dependencies {
     implementation group: 'net.linguica.maven-settings', name: 'net.linguica.maven-settings.gradle.plugin', version: "${linguicaVersion}"
     implementation group: 'org.owasp.dependencycheck', name: 'org.owasp.dependencycheck.gradle.plugin', version: "${dependencyCheckPluginVersion}"
     implementation group: 'org.sonarqube', name: 'org.sonarqube.gradle.plugin', version: "${sonarqubePluginVersion}"
+}
+
+dependencyCheck {
+    failOnError = false
+    format = 'ALL'
+    cveValidForHours = 4
+    suppressionFile = "$project.rootDir/suppressions.xml"
+}
+tasks.check.dependsOn dependencyCheckAggregate
+
+dependencyUpdates.resolutionStrategy {
+    componentSelection { rules ->
+        rules.all { ComponentSelection selection ->
+            boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm'].any { qualifier ->
+                selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/
+            }
+            if (rejected) {
+                selection.reject('Release candidate')
+            }
+        }
+    }
+}
+tasks.build.dependsOn dependencyUpdates
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "gradle-conventions"
+        property "sonar.projectNamre", "gradle-conventions"
+        property "sonar.exclusions", "**/build/generated/**,"
+        property "sonar.coverage.exclusions", "**/src/test/**"
+        property "sonar.coverage.jacoco.xmlReportPaths", ["${project.buildDir}/reports/jacoco/codeCoverageReport/codeCoverageReport.xml"]
+        property "sonar.dependencyCheck.reportPath", "$project.buildDir/reports/dependency-check-report.xml"
+        property "sonar.dependencyCheck.htmlReportPath", "$project.buildDir/reports/dependency-check-report.html"
+        property "dc5.mutationAnalysis.pitest.sensor.reports.directory", "build/reports/pitest"
+    }
 }
 
 publishing {
