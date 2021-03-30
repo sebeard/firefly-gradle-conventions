@@ -1,0 +1,12 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+    }
+
+    plugins {
+        id 'com.github.jmongard.git-semver-plugin' version "${semverPluginVersion}"
+    }
+}
+
+
+rootProject.name = 'firfly-gradle-conventions'

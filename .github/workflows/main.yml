@@ -1,0 +1,132 @@
+name: Build Pipeline
+
+on:
+  # Nightly Run
+  schedule:
+    - cron: '0 1 * * *'
+  # Push to main branch
+  push:
+    branches:
+      - 'main'
+  # Any pull request
+  pull_request:
+    branches:
+      - '*'
+      - '*/*'
+  # Manual Trigger
+  workflow_dispatch:
+
+env:
+  SLACK_STATUS_CHANNEL: firefly-alerts
+  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  GITHUB_PACKAGES_USER: ${{ secrets.PACKAGES_USER }}
+  GITHUB_PACKAGES_TOKEN: ${{ secrets.PACKAGES_TOKEN }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Notify Slack Start
+        uses: act10ns/slack@v1.2.2
+        if: always()
+        with:
+          status: starting
+          channel: ${{ env.SLACK_STATUS_CHANNEL }}
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          token: ${{ env.GITHUB_PACKAGES_TOKEN }}
+          fetch-depth: 50
+
+      - name: Fetch Tags
+        run: |
+          git fetch --tags --prune
+
+      - name: Cache/Restore Gradle Data
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/dependency-check-data
+          key: ${{ runner.os }}-gradle-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Set up JDK 1.11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.11
+
+      - name: Remove default github maven configuration
+        # This step is a workaround to avoid a decryption issue of
+        # net.linguica.gradle.maven.settings plugin and github's provided maven
+        # settings.xml file
+        run: rm ~/.m2/settings.xml
+
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Make Gradle Wrapper Executable
+        run: chmod +x gradlew
+
+      - name: Set PR Number
+        if: github.event_name == 'pull_request'
+        run: |
+          export PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
+          export PR_NUMBER_OPT="-Dsonar.pullrequest.key=${PR_NUMBER}"
+          # disable command workflow processing
+          echo "::stop-commands::`echo -n ${{ github.token }} | sha256sum | head -c 64`"
+          # log untrusted output
+          echo "::set-env name=PR_NUMBER_OPT::${PR_NUMBER_OPT}"
+          # enable workflow command processing
+          echo "::`echo -n ${{ github.token }} | sha256sum | head -c 64`::"
+
+      - name: Set Branch Name
+        if: github.event_name != 'pull_request'
+        run: |
+          export BRANCH_NAME=$(git branch --show-current)
+          export BRANCH_NAME_OPT="-Dsonar.branch.name=${BRANCH_NAME}"
+          # disable command workflow processing
+          echo "::stop-commands::`echo -n ${{ github.token }} | sha256sum | head -c 64`"
+          # log untrusted output
+          echo "::set-env name=BRANCH_NAME_OPT::${BRANCH_NAME_OPT}"
+          # enable workflow command processing
+          echo "::`echo -n ${{ github.token }} | sha256sum | head -c 64`::"
+
+      - name: Run Clean Build
+        run: ./gradlew clean build
+
+      - name: Run OWASP Dependency Check
+        run: ./gradlew dependencyCheckAggregate
+
+      - name: Run Mutation Test
+        run: ./gradlew pitest
+
+#      - name: Perform Sonarqube Checks
+#        run: ./gradlew sonarqube
+
+      - name: Upload Reports
+        uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: reports
+          path: build/reports
+
+      - name: Perform a Semantic Version Release
+        if: github.ref == 'refs/heads/main'
+        run: ./gradlew printVersion releaseVersion --no-commit
+
+      - name: Push Version Tag to Origin
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git push --follow-tags
+
+      - name: Notify Slack Finish
+        if: always()
+        uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: ${{ env.SLACK_STATUS_CHANNEL }}
