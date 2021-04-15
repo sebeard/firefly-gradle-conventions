@@ -30,7 +30,6 @@ dependencies {
     implementation group: 'org.owasp.dependencycheck', name: 'org.owasp.dependencycheck.gradle.plugin', version: "${dependencyCheckPluginVersion}"
     implementation group: 'org.sonarqube', name: 'org.sonarqube.gradle.plugin', version: "${sonarqubePluginVersion}"
 }
-}
 
 dependencyCheck {
     failOnError = false
