@@ -1,6 +1,6 @@
 plugins {
-    id 'io.firefly.library-conventions'
-    id 'io.firefly.quality-convention'
+    id 'io.firefly.library-convention'
+    id 'io.firefly.sonarqube-convention'
     id 'io.firefly.dependency-check'
     id 'io.firefly.jacoco-aggregation'
     id 'com.github.jmongard.git-semver-plugin'

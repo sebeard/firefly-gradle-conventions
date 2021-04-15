@@ -1,15 +1,17 @@
 plugins {
     id 'java-library'
-    id 'net.linguica.maven-settings' apply false
-    id 'com.github.hierynomus.license'
-    id 'com.github.spotbugs'
-    id 'project-report'
-    id 'com.avast.gradle.docker-compose'
     id 'maven-publish'
-    id "nebula.dependency-recommender"
+    id 'project-report'
     id 'io.firefly.version-resolution'
     id 'io.firefly.jacoco-convention'
-    id 'info.solidsoft.pitest'
+    id 'io.firefly.license-conversion'
+    id 'io.firefly.dependency-updates'
+    id 'io.firefly.mutation-test-convention'
+    id 'com.avast.gradle.docker-compose'
+    id 'com.github.hierynomus.license'
+    id 'com.github.spotbugs'
+    id "nebula.dependency-recommender"
+    id 'net.linguica.maven-settings' apply false
 }
 
 group 'io.firefly'
@@ -22,7 +24,6 @@ java {
 repositories {
     mavenLocal()
     mavenCentral()
-    jcenter()
 }
 
 dependencies {
@@ -78,28 +79,6 @@ spotbugsTest {
         html.enabled true
     }
 }
-
-pitest {
-    pitestVersion = project.properties["pitestVersion"]
-    threads = 4
-    outputFormats = ['XML', 'HTML']
-    timestampedReports = false
-    avoidCallsTo = ['org.slf4j']
-    failWhenNoMutations = false
-    timeoutConstInMillis = 15000 //  increase the default timeout to avoid mutation tests failing with TIMED_OUT
-}
-
-    license {
-        header rootProject.file('COPYRIGHT')
-        strictCheck true
-        skipExistingHeaders true
-        excludes(['**/*.properties', '**/*.yml', '**/*.yaml', '**/*.json', '**/*.feature'])
-        ext.year = Calendar.getInstance().get(Calendar.YEAR)
-        mapping {
-            java = 'SLASHSTAR_STYLE'
-            xml = 'XML_STYLE'
-        }
-    }
 
 
 task sourcesJar(type: Jar, dependsOn: classes) {

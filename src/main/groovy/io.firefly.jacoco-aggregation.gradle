@@ -3,10 +3,6 @@ plugins {
     id 'jacoco'
 }
 
-repositories {
-    jcenter()
-}
-
 // A resolvable configuration to collect source code
 def sourcesPath = configurations.create("sourcesPath") {
     visible = false

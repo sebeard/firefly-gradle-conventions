@@ -1,0 +1,13 @@
+plugins {
+    id 'info.solidsoft.pitest'
+}
+
+pitest {
+    pitestVersion = project.properties["pitestVersion"]
+    threads = 4
+    outputFormats = ['XML', 'HTML']
+    timestampedReports = false
+    avoidCallsTo = ['org.slf4j']
+    failWhenNoMutations = false
+    timeoutConstInMillis = 15000 //  increase the default timeout to avoid mutation tests failing with TIMED_OUT
+}
