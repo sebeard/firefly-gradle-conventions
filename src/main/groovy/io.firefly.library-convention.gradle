@@ -2,7 +2,6 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'project-report'
-    id 'io.firefly.version-resolution'
     id 'io.firefly.jacoco-convention'
     id 'io.firefly.license-conversion'
     id 'io.firefly.dependency-updates'
