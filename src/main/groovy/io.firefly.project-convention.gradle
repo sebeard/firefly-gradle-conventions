@@ -17,4 +17,4 @@ allprojects {
 tasks.test.finalizedBy codeCoverageReport
 tasks["sonarqube"].mustRunAfter codeCoverageReport
 tasks["sonarqube"].dependsOn dependencyCheckAggregate
-tasks["sonarqube"].dependsOn subprojects.tasks["pitest"]
+//tasks["sonarqube"].dependsOn subprojects.tasks["pitest"]
