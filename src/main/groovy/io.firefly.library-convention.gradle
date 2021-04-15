@@ -3,7 +3,7 @@ plugins {
     id 'maven-publish'
     id 'project-report'
     id 'io.firefly.jacoco-convention'
-    id 'io.firefly.license-conversion'
+    id 'io.firefly.license-convention'
     id 'io.firefly.dependency-updates'
     id 'io.firefly.mutation-test-convention'
     id 'com.avast.gradle.docker-compose'
