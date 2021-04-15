@@ -4,13 +4,12 @@ pluginManagement {
     }
 
     plugins {
-        id 'com.github.jmongard.git-semver-plugin' version "${semverPluginVersion}"
+        id 'com.github.jmongard.git-semver-plugin' version "${semanticVersioningPluginVersion}"
         id 'com.github.ben-manes.versions' version "${versionsPluginVersion}"
         //id 'com.github.hierynomus.license' version "${licensePluginVersion}"
         id "org.owasp.dependencycheck" version "${dependencyCheckPluginVersion}"
         id "org.sonarqube" version "${sonarqubePluginVersion}"
     }
 }
-
 
 rootProject.name = 'firefly-gradle-conventions'
