@@ -1,11 +1,11 @@
 plugins {
     id 'java-library'
-    id 'maven-publish'
     id 'project-report'
     id 'io.firefly.jacoco-convention'
     id 'io.firefly.license-convention'
     id 'io.firefly.dependency-updates'
     id 'io.firefly.mutation-test-convention'
+    id 'io.firefly.publishing-convention'
     id 'com.avast.gradle.docker-compose'
     id 'com.github.hierynomus.license'
     id 'com.github.spotbugs'
@@ -104,18 +104,7 @@ artifacts {
     archives sourcesJar
 }
 
-// TODO: Move to own convention?
 publishing {
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/sebeard/firefly-service-framework")
-            credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_PACKAGES_USER")
-                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_PACKAGES_TOKEN")
-            }
-        }
-    }
     publications {
         gpr(MavenPublication) {
             groupId project.group

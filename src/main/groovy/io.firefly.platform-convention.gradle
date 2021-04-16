@@ -1,6 +1,7 @@
 plugins {
     id 'java-platform'
-    id 'maven-publish'
+    id 'io.firefly.dependency-updates'
+    id 'io.firefly.publishing-convention'
 }
 
 javaPlatform {
@@ -9,17 +10,22 @@ javaPlatform {
 
 group "io.firefly"
 
+configurations {
+    commonPlatform
+    compileOnly.extendsFrom(commonPlatform)
+    annotationProcessor.extendsFrom(commonPlatform)
+    testCompileOnly.extendsFrom(commonPlatform)
+    testAnnotationProcessor.extendsFrom(commonPlatform)
+    implementation.extendsFrom(commonPlatform)
+    compile.extendsFrom(commonPlatform)
+    testCompile.extendsFrom(commonPlatform)
+    api.extendsFrom(commonPlatform)
+    testFixturesCompileOnly.extendsFrom(commonPlatform)
+    testFixturesAnnotationProcessor.extendsFrom(commonPlatform)
+    testFixturesImplementation.extendsFrom(commonPlatform)
+}
+
 publishing {
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/sebeard/firefly-service-framework")
-            credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_PACKAGES_USER")
-                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_PACKAGES_TOKEN")
-            }
-        }
-    }
     publications {
         gpr(MavenPublication) {
             from(components.javaPlatform)
