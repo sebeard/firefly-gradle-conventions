@@ -6,6 +6,7 @@ dependencyCheck {
     failOnError = false
     format = 'ALL'
     cveValidForHours = 4
+    // TODO: Pull in SF suppressions file and or allow it to be aggregated?
     suppressionFile = "$project.rootDir/suppressions.xml"
 }
 tasks.check.dependsOn dependencyCheckAggregate

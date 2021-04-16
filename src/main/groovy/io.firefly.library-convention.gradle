@@ -22,6 +22,14 @@ java {
 
 repositories {
     mavenLocal()
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/sebeard/*")
+        credentials {
+            username = project.findProperty("GITHUB_PACKAGES_USER") ?: System.getenv("GITHUB_PACKAGES_USER")
+            password = project.findProperty("GITHUB_PACKAGES_TOKEN") ?: System.getenv("GITHUB_PACKAGES_TOKEN")
+        }
+    }
     mavenCentral()
 }
 
@@ -34,24 +42,27 @@ dependencies {
     testCompileOnly group: 'org.projectlombok', name: 'lombok', version: "${lombokVersion}"
     testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: "${lombokVersion}"
 
-    testImplementation group: 'junit', name: 'junit', version: "${junitVersion}"
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: "${junitJupiterVersion}"
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: "${junitJupiterVersion}"
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: "${junitJupiterVersion}"
-    testRuntimeOnly group: 'org.junit.vintage', name: 'junit-vintage-engine', version: "${junitJupiterVersion}"
     testImplementation group: 'org.assertj', name: 'assertj-core', version: "${assertJVersion}"
     testImplementation group: 'org.mockito', name: 'mockito-core', version: "${mockitoVersion}"
     testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: "${mockitoVersion}"
 }
 
 configurations {
-    commonBom
-    compileOnly.extendsFrom(commonBom)
-    annotationProcessor.extendsFrom(commonBom)
-    testCompileOnly.extendsFrom(commonBom)
-    testAnnotationProcessor.extendsFrom(commonBom)
-    implementation.extendsFrom(commonBom)
-    testFixturesImplementation.extendsFrom(commonBom)
+    commonPlatform
+    compileOnly.extendsFrom(commonPlatform)
+    annotationProcessor.extendsFrom(commonPlatform)
+    testCompileOnly.extendsFrom(commonPlatform)
+    testAnnotationProcessor.extendsFrom(commonPlatform)
+    implementation.extendsFrom(commonPlatform)
+    compile.extendsFrom(commonPlatform)
+    testCompile.extendsFrom(commonPlatform)
+    api.extendsFrom(commonPlatform)
+    testFixturesCompileOnly.extendsFrom(commonPlatform)
+    testFixturesAnnotationProcessor.extendsFrom(commonPlatform)
+    testFixturesImplementation.extendsFrom(commonPlatform)
 }
 
 compileJava {
@@ -65,6 +76,8 @@ test {
     useJUnitPlatform()
 }
 
+
+// TODO: Move to own convention?
 spotbugsMain {
     reports {
         xml.enabled false
@@ -89,6 +102,7 @@ artifacts {
     archives sourcesJar
 }
 
+// TODO: Move to own convention?
 publishing {
     repositories {
         maven {
