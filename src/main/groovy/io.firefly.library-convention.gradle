@@ -33,8 +33,23 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    commonPlatform
+    compileOnly.extendsFrom(commonPlatform)
+    annotationProcessor.extendsFrom(commonPlatform)
+    testCompileOnly.extendsFrom(commonPlatform)
+    testAnnotationProcessor.extendsFrom(commonPlatform)
+    implementation.extendsFrom(commonPlatform)
+    compile.extendsFrom(commonPlatform)
+    testCompile.extendsFrom(commonPlatform)
+    api.extendsFrom(commonPlatform)
+    testFixturesCompileOnly.extendsFrom(commonPlatform)
+    testFixturesAnnotationProcessor.extendsFrom(commonPlatform)
+    testFixturesImplementation.extendsFrom(commonPlatform)
+}
+
 dependencies {
-    commonPlatform platform("io.firefly:firefly-bom:${fireflyServiceFrameworkVersion}")
+    commonPlatform enforcedPlatform("io.firefly:firefly-bom:${fireflyServiceFrameworkVersion}")
 
     implementation group: 'org.slf4j', name: 'slf4j-api'
     implementation group: 'org.slf4j', name: 'jul-to-slf4j'
@@ -50,21 +65,6 @@ dependencies {
     testImplementation group: 'org.assertj', name: 'assertj-core'
     testImplementation group: 'org.mockito', name: 'mockito-core'
     testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter'
-}
-
-configurations {
-    commonPlatform
-    compileOnly.extendsFrom(commonPlatform)
-    annotationProcessor.extendsFrom(commonPlatform)
-    testCompileOnly.extendsFrom(commonPlatform)
-    testAnnotationProcessor.extendsFrom(commonPlatform)
-    implementation.extendsFrom(commonPlatform)
-    compile.extendsFrom(commonPlatform)
-    testCompile.extendsFrom(commonPlatform)
-    api.extendsFrom(commonPlatform)
-    testFixturesCompileOnly.extendsFrom(commonPlatform)
-    testFixturesAnnotationProcessor.extendsFrom(commonPlatform)
-    testFixturesImplementation.extendsFrom(commonPlatform)
 }
 
 compileJava {
