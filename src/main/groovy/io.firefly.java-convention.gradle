@@ -1,0 +1,115 @@
+plugins {
+    id 'project-report'
+    id 'io.firefly.jacoco-convention'
+    id 'io.firefly.license-convention'
+    id 'io.firefly.dependency-updates'
+    id 'io.firefly.mutation-test-convention'
+    id 'com.avast.gradle.docker-compose'
+    id 'com.github.hierynomus.license'
+    id 'com.github.spotbugs'
+    id "nebula.dependency-recommender"
+    id 'net.linguica.maven-settings' apply false
+}
+
+group 'io.firefly'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/sebeard/*")
+        credentials {
+            username = project.findProperty("GITHUB_PACKAGES_USER") ?: System.getenv("GITHUB_PACKAGES_USER")
+            password = project.findProperty("GITHUB_PACKAGES_TOKEN") ?: System.getenv("GITHUB_PACKAGES_TOKEN")
+        }
+    }
+    mavenCentral()
+}
+
+configurations {
+    commonPlatform
+    compileOnly.extendsFrom(commonPlatform)
+    annotationProcessor.extendsFrom(commonPlatform)
+    testCompileOnly.extendsFrom(commonPlatform)
+    testAnnotationProcessor.extendsFrom(commonPlatform)
+    implementation.extendsFrom(commonPlatform)
+    api.extendsFrom(commonPlatform)
+    testFixturesCompileOnly.extendsFrom(commonPlatform)
+    testFixturesAnnotationProcessor.extendsFrom(commonPlatform)
+    testFixturesImplementation.extendsFrom(commonPlatform)
+}
+
+dependencies {
+    commonPlatform enforcedPlatform("io.firefly:firefly-bom:latest.release")
+//
+//    implementation group: 'org.slf4j', name: 'slf4j-api'
+//    implementation group: 'org.slf4j', name: 'jul-to-slf4j'
+//
+//    compileOnly group: 'org.projectlombok', name: 'lombok'
+//    annotationProcessor group: 'org.projectlombok', name: 'lombok'
+//    testCompileOnly group: 'org.projectlombok', name: 'lombok'
+//    testAnnotationProcessor group: 'org.projectlombok', name: 'lombok'
+//
+//    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api'
+//    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params'
+//    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
+//    testImplementation group: 'org.assertj', name: 'assertj-core'
+//    testImplementation group: 'org.mockito', name: 'mockito-core'
+//    testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter'
+}
+
+compileJava {
+    options.compilerArgs << "-Werror"
+    options.compilerArgs << "-Xlint:all"
+    options.compilerArgs << "-Xlint:-try"
+    options.compilerArgs << "-Xlint:-processing"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+
+// TODO: Move to own convention?
+spotbugsMain {
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
+}
+
+spotbugsTest {
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
+}
+
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+publishing {
+    publications {
+        gpr(MavenPublication) {
+            groupId project.group
+            from components.java
+            artifact sourcesJar
+        }
+    }
+}
+
+
+configurations.implementation.setCanBeResolved(true)
+configurations.testImplementation.setCanBeResolved(true)
