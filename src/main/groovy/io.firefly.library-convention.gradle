@@ -3,3 +3,22 @@ plugins {
     id 'io.firefly.java-convention'
     id 'io.firefly.publishing-convention'
 }
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+publishing {
+    publications {
+        gpr(MavenPublication) {
+            groupId project.group
+            from components.java
+            artifact sourcesJar
+        }
+    }
+}
