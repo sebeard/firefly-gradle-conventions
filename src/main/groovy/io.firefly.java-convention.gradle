@@ -45,7 +45,7 @@ configurations {
 }
 
 dependencies {
-    commonPlatform enforcedPlatform("io.firefly:firefly-bom:latest.release")
+    commonPlatform platform("io.firefly:firefly-bom:latest.release")
 
     implementation group: 'org.slf4j', name: 'slf4j-api'
     implementation group: 'org.slf4j', name: 'jul-to-slf4j'
