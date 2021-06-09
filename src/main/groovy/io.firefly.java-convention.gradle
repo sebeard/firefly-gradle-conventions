@@ -31,67 +31,71 @@ repositories {
     mavenCentral()
 }
 
-configurations {
-    commonPlatform
-    compileOnly.extendsFrom(commonPlatform)
-    annotationProcessor.extendsFrom(commonPlatform)
-    implementation.extendsFrom(commonPlatform)
-    api.extendsFrom(commonPlatform)
-    testCompileOnly.extendsFrom(commonPlatform)
-    testAnnotationProcessor.extendsFrom(commonPlatform)
-    testRuntimeOnly.extendsFrom(commonPlatform)
-    testImplementation.extendsFrom(commonPlatform)
-    testFixturesCompileOnly.extendsFrom(commonPlatform)
-    testFixturesAnnotationProcessor.extendsFrom(commonPlatform)
-    testFixturesImplementation.extendsFrom(commonPlatform)
-}
+if (name != 'firefly-bom') {
+    configurations {
+        commonPlatform
+        compileOnly.extendsFrom(commonPlatform)
+        annotationProcessor.extendsFrom(commonPlatform)
+        implementation.extendsFrom(commonPlatform)
+        api.extendsFrom(commonPlatform)
+        testCompileOnly.extendsFrom(commonPlatform)
+        testAnnotationProcessor.extendsFrom(commonPlatform)
+        testRuntimeOnly.extendsFrom(commonPlatform)
+        testImplementation.extendsFrom(commonPlatform)
+        testFixturesCompileOnly.extendsFrom(commonPlatform)
+        testFixturesAnnotationProcessor.extendsFrom(commonPlatform)
+        testFixturesImplementation.extendsFrom(commonPlatform)
+    }
 
-dependencies {
-    commonPlatform platform("io.firefly:firefly-bom:latest.release")
+    dependencies {
 
-    implementation group: 'org.slf4j', name: 'slf4j-api'
-    implementation group: 'org.slf4j', name: 'jul-to-slf4j'
+        commonPlatform platform("io.firefly:firefly-bom:latest.release")
 
-    compileOnly group: 'org.projectlombok', name: 'lombok'
-    annotationProcessor group: 'org.projectlombok', name: 'lombok'
-    testCompileOnly group: 'org.projectlombok', name: 'lombok'
-    testAnnotationProcessor group: 'org.projectlombok', name: 'lombok'
+        implementation group: 'org.slf4j', name: 'slf4j-api'
+        implementation group: 'org.slf4j', name: 'jul-to-slf4j'
 
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api'
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params'
-    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
-    testImplementation group: 'org.assertj', name: 'assertj-core'
-    testImplementation group: 'org.mockito', name: 'mockito-core'
-    testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter'
-}
+        compileOnly group: 'org.projectlombok', name: 'lombok'
+        annotationProcessor group: 'org.projectlombok', name: 'lombok'
+        testCompileOnly group: 'org.projectlombok', name: 'lombok'
+        testAnnotationProcessor group: 'org.projectlombok', name: 'lombok'
 
-compileJava {
-    options.compilerArgs << "-Werror"
-    options.compilerArgs << "-Xlint:all"
-    options.compilerArgs << "-Xlint:-try"
-    options.compilerArgs << "-Xlint:-processing"
-}
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api'
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params'
+        testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
+        testImplementation group: 'org.assertj', name: 'assertj-core'
+        testImplementation group: 'org.mockito', name: 'mockito-core'
+        testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter'
+    }
 
-test {
-    useJUnitPlatform()
-}
+
+    compileJava {
+        options.compilerArgs << "-Werror"
+        options.compilerArgs << "-Xlint:all"
+        options.compilerArgs << "-Xlint:-try"
+        options.compilerArgs << "-Xlint:-processing"
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 
 
 // TODO: Move to own convention?
-spotbugsMain {
-    reports {
-        xml.enabled false
-        html.enabled true
+    spotbugsMain {
+        reports {
+            xml.enabled false
+            html.enabled true
+        }
     }
-}
 
-spotbugsTest {
-    reports {
-        xml.enabled false
-        html.enabled true
+    spotbugsTest {
+        reports {
+            xml.enabled false
+            html.enabled true
+        }
     }
+
+
+    configurations.implementation.setCanBeResolved(true)
+    configurations.testImplementation.setCanBeResolved(true)
 }
-
-
-configurations.implementation.setCanBeResolved(true)
-configurations.testImplementation.setCanBeResolved(true)
