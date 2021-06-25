@@ -1,5 +1,4 @@
 plugins {
-    id 'io.firefly.library-convention'
     id 'io.firefly.sonarqube-convention'
     id 'io.firefly.dependency-check'
     id 'io.firefly.jacoco-aggregation'
