@@ -63,6 +63,7 @@ if (name != 'firefly-bom') {
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api'
         testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params'
         testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
+        testImplementation group: 'nl.jqno.equalsverifier', name: 'equalsverifier'
         testImplementation group: 'org.assertj', name: 'assertj-core'
         testImplementation group: 'org.force66', name: 'BeanTester'
         testImplementation group: 'org.mockito', name: 'mockito-core'
