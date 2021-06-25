@@ -108,12 +108,24 @@ jobs:
           name: reports
           path: build/reports
 
-      - name: Perform a Semantic Version Release
+      - name: Get Latest Tag
+        id: latesttag
         if: github.ref == 'refs/heads/main'
+        run: |
+          echo "::set-output name=latesttag::$(git describe --tags --abbrev=0)"
+
+      - name: Calculate Commits Since Latest Tag
+        id: commitcalc
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "::set-output name=commitcount::$(git rev-list --count refs/tags/${{ steps.latesttag.outputs.latesttag }})"
+
+      - name: Perform a Semantic Version Release
+        if: ${{ github.ref == 'refs/heads/main' && steps.commitcalc.outputs.commitcount > 0 }}
         run: ./gradlew printVersion releaseVersion --no-commit
 
       - name: Push Version Tag to Origin
-        if: github.ref == 'refs/heads/main'
+        if: ${{ github.ref == 'refs/heads/main' && steps.commitcalc.outputs.commitcount > 0 }}
         run: |
           git push --follow-tags
 
