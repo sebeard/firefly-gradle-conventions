@@ -118,7 +118,7 @@ jobs:
         id: commitcalc
         if: github.ref == 'refs/heads/main'
         run: |
-          echo "::set-output name=commitcount::$(git rev-list --count refs/tags/${{ steps.latesttag.outputs.latesttag }})"
+          echo "::set-output name=commitcount::$(git rev-list --count refs/tags/${{ steps.latesttag.outputs.latesttag }}...HEAD)"
 
       - name: Perform a Semantic Version Release
         if: ${{ github.ref == 'refs/heads/main' && steps.commitcalc.outputs.commitcount > 0 }}
