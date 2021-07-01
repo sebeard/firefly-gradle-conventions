@@ -48,7 +48,7 @@ if (name != 'firefly-bom') {
     }
 
     dependencies {
-        commonPlatform enforcedPlatform("io.frefly:firefly-bom:${fireflyServiceFrameworkVersion}")
+        commonPlatform enforcedPlatform("io.firefly:firefly-bom:${fireflyServiceFrameworkVersion}")
 
         implementation group: 'org.slf4j', name: 'slf4j-api'
         implementation group: 'org.slf4j', name: 'jul-to-slf4j'
