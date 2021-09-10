@@ -1,6 +1,5 @@
 plugins {
     id 'project-report'
-    id 'io.firefly.jacoco-convention'
     id 'io.firefly.license-convention'
     id 'io.firefly.dependency-updates'
     id 'io.firefly.mutation-test-convention'

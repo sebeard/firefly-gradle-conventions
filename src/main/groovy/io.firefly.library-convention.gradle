@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
     id 'io.firefly.java-convention'
+    id 'io.firefly.jacoco-convention'
     id 'io.firefly.publishing-convention'
 }
 
