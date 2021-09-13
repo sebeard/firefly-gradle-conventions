@@ -42,21 +42,21 @@ dependencyCheck {
     cveValidForHours = 4
     suppressionFile = "$project.rootDir/suppressions.xml"
 }
-tasks.check.dependsOn dependencyCheckAggregate
+check.dependsOn dependencyCheckAggregate
 
-dependencyUpdates.resolutionStrategy {
-    componentSelection { rules ->
-        rules.all { ComponentSelection selection ->
-            boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm'].any { qualifier ->
-                selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/
-            }
-            if (rejected) {
-                selection.reject('Release candidate')
-            }
-        }
-    }
+def isNonStable = { String version ->
+    def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { it -> version.toUpperCase().contains(it) }
+    def regex = /^[0-9,.v-]+(-r)?$/
+    return !stableKeyword && !(version ==~ regex)
 }
-tasks.build.dependsOn dependencyUpdates
+
+tasks.named("dependencyUpdates").configure {
+    rejectVersionIf {
+        isNonStable(it.candidate.version)
+    }
+    checkConstraints = true
+}
+build.dependsOn dependencyUpdates
 
 sonarqube {
     properties {
