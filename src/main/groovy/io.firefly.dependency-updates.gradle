@@ -1,5 +1,6 @@
 plugins {
     id 'com.github.ben-manes.versions'
+    id 'java'
 }
 
 def isNonStable = { String version ->
@@ -14,3 +15,5 @@ tasks.named("dependencyUpdates").configure {
     }
     checkConstraints = true
 }
+
+build.dependsOn dependencyUpdates
