@@ -10,8 +10,6 @@ plugins {
     id 'net.linguica.maven-settings' apply false
 }
 
-group 'io.firefly'
-
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
@@ -21,7 +19,7 @@ repositories {
     mavenLocal()
     maven {
         name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/sebeard/*")
+        url = uri("https://maven.pkg.github.com/sebeard/firefly-packages")
         credentials {
             username = project.findProperty("GITHUB_PACKAGES_USER") ?: System.getenv("GITHUB_PACKAGES_USER")
             password = project.findProperty("GITHUB_PACKAGES_TOKEN") ?: System.getenv("GITHUB_PACKAGES_TOKEN")

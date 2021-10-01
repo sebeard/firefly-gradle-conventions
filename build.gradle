@@ -61,7 +61,7 @@ build.dependsOn dependencyUpdates
 sonarqube {
     properties {
         property "sonar.projectKey", "gradle-conventions"
-        property "sonar.projectNamre", "gradle-conventions"
+        property "sonar.projectName", "gradle-conventions"
         property "sonar.exclusions", "**/build/generated/**,"
         property "sonar.coverage.exclusions", "**/src/test/**"
         property "sonar.coverage.jacoco.xmlReportPaths", ["${project.buildDir}/reports/jacoco/codeCoverageReport/codeCoverageReport.xml"]
@@ -75,7 +75,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/sebeard/firefly-gradle-conventions")
+            url = uri("https://maven.pkg.github.com/sebeard/firefly-packages")
             credentials {
                 username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_PACKAGES_USER")
                 password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_PACKAGES_TOKEN")
