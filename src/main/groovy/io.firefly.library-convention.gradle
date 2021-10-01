@@ -10,8 +10,19 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
 }
 
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}
+
 artifacts {
-    archives sourcesJar
+    archives javadocJar, sourcesJar
 }
 
 publishing {
@@ -20,6 +31,7 @@ publishing {
             groupId project.group
             from components.java
             artifact sourcesJar
+            artifact javadocJar
         }
     }
 }
