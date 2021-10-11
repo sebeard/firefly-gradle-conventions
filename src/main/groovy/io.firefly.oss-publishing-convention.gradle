@@ -20,6 +20,14 @@ signing {
     def signingPassword = findProperty("SIGNING_KEY_PASSPHRASE") ?: System.getenv("SIGNING_KEY_PASSPHRASE")
 
     useInMemoryPgpKeys(signingKey, signingPassword)
-    sign configurations.archives
+
+    required {
+        // signing is required if this is a release version and the artifacts are to be published
+        !version.toString().endsWith('-SNAPSHOT') && tasks.withType(PublishToMavenRepository).find {
+            gradle.taskGraph.hasTask it
+        }
+    }
+    sign publishing.publications
+
 }
 
